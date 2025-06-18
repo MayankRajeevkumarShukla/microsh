@@ -1,0 +1,13 @@
+{
+  "name": "microsh",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "microsh": "./bin/microsh.js"
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "start": "node ./bin/microsh.js"
+  }
+}
