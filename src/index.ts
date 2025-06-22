@@ -1,11 +1,14 @@
+import { initCommand } from "./commands/init";
+import { runCommand } from "./commands/run";
+
 export const handelCommand = (agrs: string[]) => {
     const [command] = agrs
     switch (command) {
         case "run":
-            console.log("🛠 Running something...")
+            runCommand();
             break;
         case "init":
-            console.log("✨ Initializing microsh project...")
+            initCommand()
             break;
         case "help":
         default:

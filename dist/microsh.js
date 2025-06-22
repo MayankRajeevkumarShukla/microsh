@@ -1,14 +1,24 @@
 #!/usr/bin/env node
 
+// src/commands/init.ts
+var initCommand = () => {
+  console.log("\u2728 Initializing microsh project from init.ts...");
+};
+
+// src/commands/run.ts
+var runCommand = () => {
+  console.log("\u{1F6E0} Running something from run.ts...");
+};
+
 // src/index.ts
 var handelCommand = (agrs) => {
   const [command] = agrs;
   switch (command) {
     case "run":
-      console.log("\u{1F6E0} Running something...");
+      runCommand();
       break;
     case "init":
-      console.log("\u2728 Initializing microsh project...");
+      initCommand();
       break;
     case "help":
     default:
