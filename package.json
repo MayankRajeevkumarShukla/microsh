@@ -9,5 +9,10 @@
     "dev": "tsup --watch",
     "build": "tsup",
     "start": "node ./bin/microsh.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
   }
 }

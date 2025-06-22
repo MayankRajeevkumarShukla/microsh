@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 // the above line is shellbang
-console.log("Welcome to microsh 🎉")
+import { handelCommand } from "../src";
+const [, , ...args] = process.argv
+handelCommand(args)
