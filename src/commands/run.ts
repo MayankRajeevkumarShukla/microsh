@@ -1,3 +1,4 @@
+import {log} from '../utils/log'
 export const runCommand=()=>{
-    console.log("🛠 Running something from run.ts...")
+    log("Running something from run.ts")
 }

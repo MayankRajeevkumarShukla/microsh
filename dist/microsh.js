@@ -5,9 +5,14 @@ var initCommand = () => {
   console.log("\u2728 Initializing microsh project from init.ts...");
 };
 
+// src/utils/log.ts
+var log = (message) => {
+  console.log(`[microsh] ${message}`);
+};
+
 // src/commands/run.ts
 var runCommand = () => {
-  console.log("\u{1F6E0} Running something from run.ts...");
+  log("Running something from run.ts");
 };
 
 // src/index.ts
