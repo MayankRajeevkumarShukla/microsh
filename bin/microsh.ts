@@ -2,4 +2,4 @@
 // the above line is shellbang
 import { handelCommand } from "../src";
 const [, , ...args] = process.argv
-handelCommand(args)
+await handelCommand(args)

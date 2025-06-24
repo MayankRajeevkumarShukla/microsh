@@ -1,11 +1,11 @@
 import { initCommand } from "./commands/init";
 import { runCommand } from "./commands/run";
 
-export const handelCommand = (agrs: string[]) => {
+export const handelCommand = async(agrs: string[]) => {
     const [command] = agrs
     switch (command) {
         case "run":
-            runCommand();
+            runCommand(agrs.slice(1));
             break;
         case "init":
             initCommand()
