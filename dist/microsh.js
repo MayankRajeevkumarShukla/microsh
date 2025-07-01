@@ -6,8 +6,27 @@ var log = (message) => {
 };
 
 // src/commands/init.ts
+import { existsSync } from "fs";
+import { mkdir, writeFile } from "fs/promises";
 var initCommand = () => {
-  log("\u2728 Initializing microsh project from init.ts...");
+  const folders = ["src", "config"];
+  for (const folder of folders) {
+    if (!existsSync(folder)) {
+      mkdir(folder).then(() => log(`Created folder: ${folder}`)).catch((err) => log(`\u274C Failed to create ${folder}: ${err.message}`));
+    } else {
+      log(`Folder already exists: ${folder}`);
+    }
+  }
+  const configContent = {
+    name: "microsh-app",
+    version: "0.1.0"
+  };
+  const configPath = "config/config.json";
+  if (!existsSync(configPath)) {
+    writeFile(configPath, JSON.stringify(configContent, null, 2), "utf-8").then(() => log("\u2705 Created config/config.json")).catch((err) => log(`\u274C Failed to write config file: ${err.message}`));
+  } else {
+    log("config/config.json already exists");
+  }
 };
 
 // src/commands/run.ts
