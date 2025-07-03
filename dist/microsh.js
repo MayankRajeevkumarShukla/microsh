@@ -69,6 +69,36 @@ Usage:
   }
 };
 
+// src/repl.ts
+import readline from "readline";
+var startShell = async () => {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    prompt: ">"
+  });
+  log("microsh shell started. Type 'exit' to quit.");
+  rl.prompt();
+  rl.on("line", async (line) => {
+    const input = line.trim();
+    if (input === "exit") {
+      log("Goodbye!");
+      rl.close();
+      process.exit(0);
+    }
+    const args2 = input.split(/\s+/);
+    await handelCommand(args2);
+    rl.prompt();
+  });
+  rl.on("close", () => {
+    process.exit(0);
+  });
+};
+
 // bin/microsh.ts
 var [, , ...args] = process.argv;
-await handelCommand(args);
+if (args.length === 0) {
+  await startShell();
+} else {
+  await handelCommand(args);
+}
