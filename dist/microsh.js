@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 
 // src/utils/log.ts
-var log = (message) => {
-  console.log(`[microsh] ${message}`);
+import { blue, green, red } from "colorette";
+var log = (message, type = "info") => {
+  const prefix = {
+    info: blue("\u2139\uFE0F [microsh]"),
+    success: green("\u2705 [microsh]"),
+    error: red("\u274C [microsh]")
+  };
+  console.log(`${prefix[type]} ${message}`);
 };
 
 // src/commands/init.ts
@@ -90,6 +96,20 @@ var parseInput = (input) => {
 };
 
 // src/repl.ts
+import { yellow as yellow2 } from "colorette";
+console.clear();
+console.clear();
+console.log(
+  yellow2(`
+\u2588\u2588\u2588\u2557   \u2588\u2588\u2588\u2557\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557
+\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551  \u2588\u2588\u2551
+\u2588\u2588\u2554\u2588\u2588\u2588\u2588\u2554\u2588\u2588\u2551\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551
+\u2588\u2588\u2551\u255A\u2588\u2588\u2554\u255D\u2588\u2588\u2551\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2551   \u2588\u2588\u2551\u255A\u2550\u2550\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551
+\u2588\u2588\u2551 \u255A\u2550\u255D \u2588\u2588\u2551\u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551
+\u255A\u2550\u255D     \u255A\u2550\u255D\u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D
+`)
+);
+log("Welcome to microsh \u{1F41A} Type 'help' or 'exit'");
 var startShell = async () => {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -105,11 +125,14 @@ var startShell = async () => {
       rl.close();
       process.exit(0);
     }
-    const parsed = parseInput(input);
-    await handleCommand([parsed.command, ...parsed.args], parsed.flags);
-  });
-  rl.on("close", () => {
-    process.exit(0);
+    try {
+      const parsed = parseInput(input);
+      await handleCommand([parsed.command, ...parsed.args], parsed.flags);
+    } catch (err) {
+      log("Error: " + err.message, "error");
+    } finally {
+      rl.prompt();
+    }
   });
 };
 
