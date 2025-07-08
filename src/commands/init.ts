@@ -2,7 +2,7 @@ import { log } from "../utils/log"
 import {existsSync} from "fs"
 import {mkdir,writeFile} from "fs/promises"
 import { version } from "os"
-export const initCommand =()=>{
+export const initCommand =(flags: Record<string, any>)=>{
    const folders = ["src","config"]
    for(const folder of folders){
       if(!existsSync(folder)){

@@ -8,7 +8,7 @@ var log = (message) => {
 // src/commands/init.ts
 import { existsSync } from "fs";
 import { mkdir, writeFile } from "fs/promises";
-var initCommand = () => {
+var initCommand = (flags) => {
   const folders = ["src", "config"];
   for (const folder of folders) {
     if (!existsSync(folder)) {
@@ -31,7 +31,7 @@ var initCommand = () => {
 
 // src/commands/run.ts
 import { readFile } from "fs/promises";
-var runCommand = async (args2) => {
+var runCommand = async (args2, flags) => {
   const [filename] = args2;
   if (!filename) {
     log("Please provide a file name. Example: microsh run hello.txt");
@@ -47,30 +47,49 @@ var runCommand = async (args2) => {
 };
 
 // src/index.ts
-var handelCommand = async (agrs) => {
-  const [command] = agrs;
+async function handleCommand(args2, flags = {}) {
+  const [command] = args2;
   switch (command) {
     case "run":
-      runCommand(agrs.slice(1));
+      await runCommand(args2.slice(1), flags);
       break;
     case "init":
-      initCommand();
+      initCommand(flags);
       break;
     case "help":
     default:
       console.log(`
-            microsh - The custom shell CLI
+microsh - The custom shell CLI
 
 Usage:
-  microsh run     # Run something
-  microsh init    # Initialize project
-  microsh help    # Show this help message
-            `);
+  run <file> [--verbose]
+  init [--force]
+      `);
   }
-};
+}
 
 // src/repl.ts
 import readline from "readline";
+
+// src/utils/parser.ts
+var parseInput = (input) => {
+  const tokens = input.trim().split(/\s+/);
+  const command = tokens[0];
+  const args2 = [];
+  const flags = {};
+  for (let i = 1; i < tokens.length; i++) {
+    const token = tokens[i];
+    if (token.startsWith("--")) {
+      const [key, value] = token.slice(2).split("=");
+      flags[key] = value ?? true;
+    } else {
+      args2.push(token);
+    }
+  }
+  return { command, args: args2, flags };
+};
+
+// src/repl.ts
 var startShell = async () => {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -86,9 +105,8 @@ var startShell = async () => {
       rl.close();
       process.exit(0);
     }
-    const args2 = input.split(/\s+/);
-    await handelCommand(args2);
-    rl.prompt();
+    const parsed = parseInput(input);
+    await handleCommand([parsed.command, ...parsed.args], parsed.flags);
   });
   rl.on("close", () => {
     process.exit(0);
@@ -100,5 +118,5 @@ var [, , ...args] = process.argv;
 if (args.length === 0) {
   await startShell();
 } else {
-  await handelCommand(args);
+  await handleCommand(args);
 }

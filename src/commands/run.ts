@@ -1,6 +1,6 @@
 import { readFile } from 'fs/promises';
 import { log } from '../utils/log'
-export const runCommand = async (args: string[]) => {
+export const runCommand = async (args: string[],flags: Record<string, any>) => {
     const [filename] = args;
     if (!filename) {
         log("Please provide a file name. Example: microsh run hello.txt")

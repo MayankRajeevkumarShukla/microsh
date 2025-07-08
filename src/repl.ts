@@ -1,7 +1,7 @@
 import readline from "readline";
-import { handelCommand } from "./index";
+import { handleCommand } from "./index";
 import {log} from "./utils/log"
-
+import { parseInput } from "./utils/parser";
 export const startShell = async()=>{
     const rl =  readline.createInterface({
         input:process.stdin,
@@ -17,9 +17,8 @@ export const startShell = async()=>{
             rl.close();
             process.exit(0)
         }
-        const args = input.split(/\s+/)
-        await handelCommand(args)
-        rl.prompt()
+       const parsed = parseInput(input)
+        await handleCommand([parsed.command, ...parsed.args], parsed.flags);
     })
     rl.on("close",()=>{
         process.exit(0)

@@ -1,25 +1,27 @@
 import { initCommand } from "./commands/init";
 import { runCommand } from "./commands/run";
 
-export const handelCommand = async(agrs: string[]) => {
-    const [command] = agrs
-    switch (command) {
-        case "run":
-            runCommand(agrs.slice(1));
-            break;
-        case "init":
-            initCommand()
-            break;
-        case "help":
-        default:
-            console.log(`
-            microsh - The custom shell CLI
+export async function handleCommand(
+  args: string[],
+  flags: Record<string, any> = {}
+) {
+  const [command] = args;
+
+  switch (command) {
+    case "run":
+      await runCommand(args.slice(1), flags);
+      break;
+    case "init":
+      initCommand(flags);
+      break;
+    case "help":
+    default:
+      console.log(`
+microsh - The custom shell CLI
 
 Usage:
-  microsh run     # Run something
-  microsh init    # Initialize project
-  microsh help    # Show this help message
-            `)
-
-    }
+  run <file> [--verbose]
+  init [--force]
+      `);
+  }
 }
