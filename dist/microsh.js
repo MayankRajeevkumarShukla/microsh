@@ -37,18 +37,44 @@ var initCommand = (flags) => {
 
 // src/commands/run.ts
 import { readFile } from "fs/promises";
+
+// src/utils/config.ts
+import { existsSync as existsSync2 } from "fs";
+import { readFileSync } from "fs";
+function loadConfig() {
+  const path = "microsh.config.json";
+  if (!existsSync2(path)) {
+    log("No microsh.config.json found", "info");
+    return {};
+  }
+  try {
+    const raw = readFileSync(path, "utf-8");
+    const parsed = JSON.parse(raw);
+    log("Loaded config file", "success");
+    return parsed;
+  } catch (err) {
+    log("Failed to read config file", "error");
+    return {};
+  }
+}
+
+// src/commands/run.ts
 var runCommand = async (args2, flags) => {
-  const [filename] = args2;
+  const config = loadConfig();
+  const [filenameArg] = args2;
+  const filename = filenameArg || config.defaultFile;
   if (!filename) {
     log("Please provide a file name. Example: microsh run hello.txt");
     return;
   }
   try {
     const content = await readFile(filename, "utf-8");
-    log(`Contents of ${filename}:`);
+    if (flags.verbose || config.verbose) {
+      log(`\u{1F4C2} Reading file: ${filename}`);
+    }
     console.log(content);
   } catch (error) {
-    log(`\u274C Could not read file "${filename}": ${error.message}`);
+    log(`\u274C Failed to read file: ${error.message}`, "error");
   }
 };
 
