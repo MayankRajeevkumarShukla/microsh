@@ -42,13 +42,13 @@ import { readFile } from "fs/promises";
 import { existsSync as existsSync2 } from "fs";
 import { readFileSync } from "fs";
 function loadConfig() {
-  const path = "microsh.config.json";
-  if (!existsSync2(path)) {
+  const path2 = "microsh.config.json";
+  if (!existsSync2(path2)) {
     log("No microsh.config.json found", "info");
     return {};
   }
   try {
-    const raw = readFileSync(path, "utf-8");
+    const raw = readFileSync(path2, "utf-8");
     const parsed = JSON.parse(raw);
     log("Loaded config file", "success");
     return parsed;
@@ -78,6 +78,37 @@ var runCommand = async (args2, flags) => {
   }
 };
 
+// src/commands/builtin.ts
+import { readdirSync, statSync } from "fs";
+import path from "path";
+function pwdCommand() {
+  console.log(process.cwd());
+}
+function cdCommand(args2) {
+  const target = args2[0];
+  if (!target) {
+    log("Missing path to change directory", "error");
+    return;
+  }
+  try {
+    process.chdir(target);
+    log(`Changed directory to ${process.cwd()}`, "success");
+  } catch (e) {
+    log(`Cannot change to directory: ${target}`, "error");
+  }
+}
+function lsCommand() {
+  const currentDir = process.cwd();
+  const files = readdirSync(currentDir);
+  for (const file of files) {
+    const fullPath = path.join(currentDir, file);
+    const stats = statSync(fullPath);
+    const isDir = stats.isDirectory();
+    const symbol = isDir ? "\u{1F4C1}" : "\u{1F4C4}";
+    console.log(`${symbol} ${file}`);
+  }
+}
+
 // src/index.ts
 async function handleCommand(args2, flags = {}) {
   const [command] = args2;
@@ -87,6 +118,15 @@ async function handleCommand(args2, flags = {}) {
       break;
     case "init":
       initCommand(flags);
+      break;
+    case "pwd":
+      pwdCommand();
+      break;
+    case "cd":
+      cdCommand(args2.slice(1));
+      break;
+    case "ls":
+      lsCommand();
       break;
     case "help":
     default:

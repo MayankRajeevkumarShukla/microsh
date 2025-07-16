@@ -1,27 +1,28 @@
-import { readdirSync,statSync } from "fs";
-import path from "path"
-import {log} from "../utils/log"
+import { readdirSync, statSync } from "fs";
+import path from "path";
+import { log } from "../utils/log.js";
 
-export const pwdCommand = ()=>{
-    console.log(process.cwd())
+export function pwdCommand() {
+  console.log(process.cwd());
 }
-export const cdCommand =(args:string[])=>{
-const target = args[0]
-if(!target){
-    log("Missing path to change directory", "error")
-    return
-}
-try {
-       process.chdir(target);
+
+export function cdCommand(args: string[]) {
+  const target = args[0];
+  if (!target) {
+    log("Missing path to change directory", "error");
+    return;
+  }
+
+  try {
+    process.chdir(target);
     log(`Changed directory to ${process.cwd()}`, "success");
-
-} catch (error) {
-        log(`Cannot change to directory: ${target}`, "error");
-
+  } catch (e) {
+    log(`Cannot change to directory: ${target}`, "error");
+  }
 }
-}
-export const lscommand = ()=>{
-    const currentDir = process.cwd();
+
+export function lsCommand() {
+  const currentDir = process.cwd();
   const files = readdirSync(currentDir);
 
   for (const file of files) {
