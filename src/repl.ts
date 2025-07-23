@@ -21,6 +21,7 @@ export const startShell = async () => {
     input: process.stdin,
     output: process.stdout,
     prompt: ">",
+    historySize:100
   });
   log("microsh shell started. Type 'exit' to quit.");
   rl.prompt();

@@ -205,7 +205,8 @@ var startShell = async () => {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: ">"
+    prompt: ">",
+    historySize: 100
   });
   log("microsh shell started. Type 'exit' to quit.");
   rl.prompt();
