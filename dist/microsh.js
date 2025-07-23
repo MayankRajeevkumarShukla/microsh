@@ -109,8 +109,22 @@ function lsCommand() {
   }
 }
 
+// src/shell/env.ts
+var envVars = {};
+function setEnv(key, value) {
+  envVars[key] = value;
+}
+function expandEnvInArgs(args2) {
+  return args2.map((arg) => {
+    return arg.replace(/\$([A-Z_]+)/gi, (_, varName) => {
+      return envVars[varName] || "";
+    });
+  });
+}
+
 // src/index.ts
 async function handleCommand(args2, flags = {}) {
+  args2 = expandEnvInArgs(args2);
   const [command] = args2;
   switch (command) {
     case "run":
@@ -127,6 +141,17 @@ async function handleCommand(args2, flags = {}) {
       break;
     case "ls":
       lsCommand();
+      break;
+    case "set":
+      const [kv] = args2.slice(1);
+      if (!kv || !kv.includes("=")) {
+        break;
+      }
+      const [key, value] = kv.split("=");
+      setEnv(key, value);
+      break;
+    case "echo":
+      console.log(args2.slice(1).join(" "));
       break;
     case "help":
     default:
